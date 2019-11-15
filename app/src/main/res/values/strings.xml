@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">trip</string>
+    <string name="app_name">TRIP</string>
+    <string name="Slogan">Your Journey,Our Concern!!!</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiYmVuZXRyaXAiLCJhIjoiY2szMDllZ2Q5MGdmeDNicWowOWh4eHU4NyJ9.byuvzaFXZkjxT35KYjIbdQ</string>
 </resources>

@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if(v==rider){
-            Intent look =new Intent(MainActivity.this,BookRider.class);
+            Intent look =new Intent(MainActivity.this, BookRiderActivity.class);
             startActivity(look);
         }
 

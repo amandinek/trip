@@ -2,62 +2,244 @@ package com.example.trip;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.SortedList;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Point;
+import android.net.DnsResolver;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.view.View;
+import android.widget.ProgressBar;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
-public class ConfrimRiderActivity extends AppCompatActivity {
+import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Response;
 
-    private MapView myMap;
+public class ConfrimRiderActivity extends AppCompatActivity implements OnMapReadyCallback,
+        MapboxMap.OnMapLongClickListener, SortedList.Callback<DirectionsResponse> {
 
-    long DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L;
-    long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5;
+        private static final int ONE_HUNDRED_MILLISECONDS = 100;
 
-    LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(this);
+        @BindView(R.id.mapView) MapView mapView;
+        @BindView(R.id.routeLoadingProgressBar) ProgressBar routeLoading;
+        @BindView(R.id.fabRemoveRoute) FloatingActionButton fabRemoveRoute;
 
-    LocationEngineRequest request = new LocationEngineRequest.Builder(DEFAULT_INTERVAL_IN_MILLISECONDS)
-            .setPriority(LocationEngineRequest.PRIORITY_NO_POWER)
-            .setMaxWaitTime(DEFAULT_MAX_WAIT_TIME)
-            .build();
+        private MapboxMap mapboxMap;
+        private NavigationMapRoute navigationMapRoute;
+        private StyleCycle styleCycle = new StyleCycle();
 
-//    locationEngine.requestLocationUpdates(request, callback, getMainLooper());
-//    locationEngine.getLastLocation(callback);
+        private Marker originMarker;
+        private Marker destinationMarker;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+                super.onCreate(savedInstanceState);
+                setContentView(R.layout.activity_confrim_rider);
+                ButterKnife.bind(this);
 
-        //Mapbox_token
-        Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
+                mapView.onCreate(savedInstanceState);
+                mapView.getMapAsync(this);
+        }
 
-        setContentView(R.layout.activity_confrim_rider);
-        myMap = (MapView) findViewById(R.id.mapView);
-        myMap.onCreate(savedInstanceState);
-        myMap.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        @OnClick(R.id.fabStyles)
+        public void onStyleFabClick() {
+                if (mapboxMap != null) {
+                        mapboxMap.setStyle(styleCycle.getNextStyle());
+                }
+        }
 
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
+        @OnClick(R.id.fabRemoveRoute)
+        public void onRemoveRouteClick(View fabRemoveRoute) {
+                removeRouteAndMarkers();
+                fabRemoveRoute.setVisibility(View.INVISIBLE);
+        }
 
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-
-
-                    }
+        @Override
+        public void onMapReady(MapboxMap mapboxMap) {
+                this.mapboxMap = mapboxMap;
+                mapboxMap.setStyle(styleCycle.getStyle(), style -> {
+                        initializeLocationComponent(mapboxMap);
+                        navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap);
+                        mapboxMap.addOnMapLongClickListener(this);
+                        Snackbar.make(mapView, "Long press to select route", Snackbar.LENGTH_SHORT).show();
                 });
+        }
 
-            }
-        });
-        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(this);
-    }
+        @Override
+        public boolean onMapLongClick(@NonNull LatLng point) {
+                handleClicked(point);
+                return true;
+        }
+
+        @Override
+        public void onResponse(@NonNull Call<DirectionsResponse> call, @NonNull Response<DirectionsResponse> response) {
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && !response.body().routes().isEmpty()) {
+                        List<DirectionsRoute> routes = response.body().routes();
+                        navigationMapRoute.addRoutes(routes);
+                        routeLoading.setVisibility(View.INVISIBLE);
+                        fabRemoveRoute.setVisibility(View.VISIBLE);
+                }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call<DirectionsResponse> call, @NonNull Throwable throwable) {
+                Timber.e(throwable);
+        }
+
+        @Override
+        public void onResume() {
+                super.onResume();
+                mapView.onResume();
+        }
+
+        @Override
+        protected void onStart() {
+                super.onStart();
+                mapView.onStart();
+                if (navigationMapRoute != null) {
+                        navigationMapRoute.onStart();
+                }
+        }
+
+        @Override
+        protected void onStop() {
+                super.onStop();
+                mapView.onStop();
+                if (navigationMapRoute != null) {
+                        navigationMapRoute.onStop();
+                }
+        }
+
+        @Override
+        public void onPause() {
+                super.onPause();
+                mapView.onPause();
+        }
+
+        @Override
+        public void onLowMemory() {
+                super.onLowMemory();
+                mapView.onLowMemory();
+        }
+
+        @Override
+        protected void onDestroy() {
+                super.onDestroy();
+                mapView.onDestroy();
+        }
+
+        @Override
+        protected void onSaveInstanceState(Bundle outState) {
+                super.onSaveInstanceState(outState);
+                mapView.onSaveInstanceState(outState);
+        }
+
+        @SuppressWarnings("MissingPermission")
+        private void initializeLocationComponent(MapboxMap mapboxMap) {
+                LocationComponent locationComponent = mapboxMap.getLocationComponent();
+                locationComponent.activateLocationComponent(this, mapboxMap.getStyle());
+                locationComponent.setLocationComponentEnabled(true);
+                locationComponent.setRenderMode(RenderMode.COMPASS);
+                locationComponent.setCameraMode(CameraMode.TRACKING);
+                locationComponent.zoomWhileTracking(10d);
+        }
+
+        private void handleClicked(@NonNull LatLng point) {
+                vibrate();
+                if (originMarker == null) {
+                        originMarker = mapboxMap.addMarker(new MarkerOptions().position(point));
+                        Snackbar.make(mapView, "Origin selected", Snackbar.LENGTH_SHORT).show();
+                } else if (destinationMarker == null) {
+                        destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(point));
+                        Point originPoint = Point.fromLngLat(
+                                originMarker.getPosition().getLongitude(), originMarker.getPosition().getLatitude());
+                        Point destinationPoint = Point.fromLngLat(
+                                destinationMarker.getPosition().getLongitude(), destinationMarker.getPosition().getLatitude());
+                        Snackbar.make(mapView, "Destination selected", Snackbar.LENGTH_SHORT).show();
+                        findRoute(originPoint, destinationPoint);
+                        routeLoading.setVisibility(View.VISIBLE);
+                }
+        }
+
+        @SuppressLint("MissingPermission")
+        private void vibrate() {
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                if (vibrator == null) {
+                        return;
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(ONE_HUNDRED_MILLISECONDS, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                        vibrator.vibrate(ONE_HUNDRED_MILLISECONDS);
+                }
+        }
+
+        private void removeRouteAndMarkers() {
+                mapboxMap.removeMarker(originMarker);
+                originMarker = null;
+                mapboxMap.removeMarker(destinationMarker);
+                destinationMarker = null;
+                navigationMapRoute.removeRoute();
+        }
+
+        public void findRoute(Point origin, Point destination) {
+                NavigationRoute.builder(this)
+                        .accessToken(Mapbox.getAccessToken())
+                        .origin(origin)
+                        .destination(destination)
+                        .alternatives(true)
+                        .build()
+                        .getRoute(this);
+        }
+
+        private static class StyleCycle {
+                private static final String[] STYLES = new String[] {
+                        Style.MAPBOX_STREETS,
+                        Style.OUTDOORS,
+                        Style.LIGHT,
+                        Style.DARK,
+                        Style.SATELLITE_STREETS
+                };
+
+                private int index;
+
+                private String getNextStyle() {
+                        index++;
+                        if (index == STYLES.length) {
+                                index = 0;
+                        }
+                        return getStyle();
+                }
+
+                private String getStyle() {
+                        return STYLES[index];
+                }
+        }
 }

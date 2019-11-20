@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.location.Location;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.mapbox.android.core.location.LocationEngine;
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
-        MainActivity.this.mapboxMap = mapboxMap;
+        map = mapboxMap;
+        enableLocation();
 
     }
 
@@ -74,6 +76,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initializeLocationEngine(){
+//        LocationEngineProvider locationEngineProvider = new LocationEngineProvider(this);
+//        locationEngine = locationEngineProvider.obtainBestLocationEngineAvailable();
+//        locationEngine.setPriority(LocationEnginePriority.HIGH_ACCURACY);
+//
+//        Location lastLocation = locationEngine.getLastLocation();
+//        if (lastLocation != null && lastLocation.getLongitude() != 0 && lastLocation.getLatitude() != 0) {
+//            originLocation = lastLocation;
+//            setCameraPosition(lastLocation);
+//        } else {
+//            locationEngine.addLocationEngineListener(this);
+//            locationEngine.activate();
+//            Log.e("LOCATION", "NULL LOCATION");
+//        }
 
 
 
@@ -102,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted){
+            enableLocation();
 
         }
 

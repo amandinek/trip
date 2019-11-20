@@ -6,11 +6,18 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -21,41 +28,72 @@ public class BookRiderActivity extends AppCompatActivity implements View.OnClick
 
     @BindView(R.id.names)EditText names;
     @BindView(R.id.fone)EditText contacts;
-    @BindView(R.id.depPoint)EditText pickup;
-    @BindView(R.id.arivPoint) EditText destination;
     @BindView(R.id.in_date)EditText date;
     @BindView(R.id.in_time)EditText time;
-    @BindView(R.id.settingDate) Button setDate;
-    @BindView(R.id.settingTime) Button setTime;
     @BindView(R.id.booking)Button booking;
 
     private int mYear, mMonth, mDay, mHour, mMinute;
-
+    private DatabaseReference clientReference;
+    private ValueEventListener  clientReferenceListener;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        clientReference = FirebaseDatabase
+                .getInstance()
+                .getReference().child(LOCATION_SERVICE);
+
+
+        clientReferenceListener =  clientReference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                    String location = locationSnapshot.getValue().toString();
+                    Log.d("Locations updated", "location: " + location);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_rider);
 
         ButterKnife.bind(this);
 
-        setDate.setOnClickListener(this);
-        setTime.setOnClickListener(this);
+        date.setOnClickListener(this);
+        time.setOnClickListener(this);
         booking.setOnClickListener(this);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
 
+    }
+
+    public void saveLocationToFirebase(String location) {
+        clientReference.push().setValue(location);
     }
 
     @Override
     public void onClick(View v) {
 
         if (v==booking){
-            Intent book =new Intent(BookRiderActivity.this,ConfrimRiderActivity.class);
+            String fullNames=names.getText().toString();
+            String phone=contacts.getText().toString();
+            String datedepart=date.getText().toString();
+            String timedepart=time.getText().toString();
+
+
+            Intent book =new Intent(BookRiderActivity.this,RiderMapsActivity.class);
             startActivity(book);
 
         }
-        if(v==setDate){
+        if(v==date){
             // Get Current Date
             final Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
@@ -76,7 +114,7 @@ public class BookRiderActivity extends AppCompatActivity implements View.OnClick
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
         }
-        if(v==setTime){
+        if(v==time){
             // Get Current Time
             final Calendar c = Calendar.getInstance();
             mHour = c.get(Calendar.HOUR_OF_DAY);

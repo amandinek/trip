@@ -9,16 +9,15 @@
 
     <TextView
         android:id="@+id/pageTitle1"
-        android:textColor="@color/colorPrimaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="63dp"
         android:text="Book Rider"
+        android:textColor="@color/colorPrimaryText"
         tools:layout_editor_absoluteX="152dp"
         tools:layout_editor_absoluteY="99dp" />
-
 
     <EditText
         android:id="@+id/in_date"
@@ -27,11 +26,11 @@
         android:layout_below="@+id/fone"
         android:layout_centerInParent="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="30dp"
         android:hint="date of departure"
         android:textColor="@color/colorPrimaryText"
         android:textColorHint="@color/colorChocolate"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/in_time"
@@ -40,11 +39,11 @@
         android:layout_below="@+id/in_date"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="23dp"
+        android:layout_marginTop="26dp"
         android:hint="time of departure"
-        android:textSize="16sp"
         android:textColor="@color/colorPrimaryText"
         android:textColorHint="@color/colorChocolate"
-        />
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/names"
@@ -53,9 +52,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="107dp"
-        android:layout_marginLeft="107dp"
-        android:layout_marginTop="196dp"
+        android:layout_marginStart="130dp"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="113dp"
         android:hint="Your Names"
         android:textColor="@color/colorPrimaryText"
         android:textColorHint="@color/colorChocolate"
@@ -69,9 +68,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="86dp"
-        android:layout_marginLeft="86dp"
-        android:layout_marginTop="291dp"
+        android:layout_marginStart="93dp"
+        android:layout_marginLeft="93dp"
+        android:layout_marginTop="184dp"
         android:hint="your phone numbers"
         android:textColor="@color/colorPrimaryText"
         android:textColorHint="@color/colorChocolate"
@@ -88,9 +87,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="150dp"
-        android:layout_marginLeft="150dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginStart="143dp"
+        android:layout_marginLeft="143dp"
+        android:layout_marginBottom="166dp"
         android:text="NEXT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.513"

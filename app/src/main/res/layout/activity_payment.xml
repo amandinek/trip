@@ -1,9 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PaymentActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pay"
+        android:padding="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/subtitle"
+            android:textColor="@color/colorPrimary"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="109dp"
+            android:textColor="@color/colorPrimary"
+            android:text="Mode of payment" />
+
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorGreen"
+            android:hint="Amount"
+            android:id="@+id/amount"
+            android:layout_margin="10dp"
+            android:layout_centerHorizontal="true"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mode"
+            android:orientation="horizontal"
+            android:layout_below="@+id/amount">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="VISA"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MoMo"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cash"/>
+
+        </RadioGroup>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rating"
+        android:layout_below="@+id/pay"
+        android:layout_centerHorizontal="true">
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="How was our service received?"
+           android:id="@+id/question"
+           android:textColor="@color/colorPrimary"/>
+
+        <RatingBar
+            android:id="@+id/ratting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginLeft="100dp"
+            android:numStars="5"
+            android:stepSize="0.1" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PAY"
+        android:id="@+id/paymen"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/pay"
+        android:layout_marginTop="60dp"/>
+
+</RelativeLayout>

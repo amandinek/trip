@@ -2,6 +2,7 @@ package com.example.trip;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,18 +28,18 @@ import butterknife.ButterKnife;
 
 public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
 
-    private GoogleMap mMap;
-    Location mLastLocation;
+    private GoogleMap riderMap;
+    Location mLastLocation,nextLocation;
     LocationRequest mLocationRequest;
 
     private FusedLocationProviderClient mFusedLocationClient;
 
 
-    private LatLng pickupLocation;
+    private LatLng pickupLocation,dropLocation;
 
     private Boolean requestBol = false;
 
-    private Marker pickupMarker;
+    private Marker pickupMarker,dropMarker;
 
     private SupportMapFragment mapFragment;
 
@@ -49,6 +51,7 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
     @BindView(R.id.depart)EditText departure;
     @BindView(R.id.arrival)EditText drop;
     @BindView(R.id.submit) Button request;
+    @BindView(R.id.add)Button view;
 
 
 
@@ -83,16 +86,31 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        riderMap = googleMap;
 
         // Add a marker in Sydney and move the camera
+        float zoomLevel=15.0f;
         LatLng kigali = new LatLng(-1.9501, 30.0588);
-        mMap.addMarker(new MarkerOptions().position(kigali).title("Marker in kigali"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(kigali));
+        riderMap.addMarker(new MarkerOptions().position(kigali).title("Marker in kigali"));
+        riderMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kigali,zoomLevel));
     }
 
     @Override
     public void onClick(View v) {
+        if(v==view){
+            pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            pickupMarker = riderMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.common_full_open_on_phone)));
+
+            dropLocation=new LatLng(nextLocation.getLatitude(),nextLocation.getLongitude());
+            dropMarker= riderMap.addMarker(new MarkerOptions().position(dropLocation).title("Next Location")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.common_full_open_on_phone)));
+
+        }
+        if(v==request){
+            Intent pay =new Intent(RiderMapsActivity.this,PaymentActivity.class);
+            startActivity(pay);
+        }
 
     }
 }

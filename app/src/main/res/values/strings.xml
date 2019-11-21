@@ -2,4 +2,5 @@
     <string name="app_name">trip</string>
     <string name="access_token">pk.eyJ1Ijoia2FyYW1iaXppIiwiYSI6ImNrMnl5ZHRkZjBjNGgzYm1xc2kwb2NlZDAifQ.Rjb0iGTfsQhC7UfcUia1yQ</string>
     <string name="user_location_permission_explanation">let us have access</string>
+    <string name="title_activity_welcome">Map</string>
 </resources>

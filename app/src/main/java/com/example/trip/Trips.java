@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import dmax.dialog.SpotsDialog;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -95,8 +96,16 @@ public class Trips extends AppCompatActivity {
 
         dialog.setView(login_layout);
         dialog.setPositiveButton("SIGN IN", new DialogInterface.OnClickListener() {
+
+
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+
+                dialog.dismiss();
+
+
 
                 if(TextUtils.isEmpty(editEmail.getText().toString())){
                     Snackbar.make(rootLayout,"please enter email adress",Snackbar.LENGTH_SHORT)
@@ -112,11 +121,15 @@ public class Trips extends AppCompatActivity {
 
                 }
 
+//                AlertDialog waitingDialog = new SpotsDialog(this);
+//                waitingDialog.show();
+
+
                 auth.signInWithEmailAndPassword(editEmail.getText().toString(),editPassword.getText().toString())
                                       .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                           @Override
                                           public void onSuccess(AuthResult authResult) {
-                                              startActivity(new Intent(Trips.this,Welcome.class));
+                                              startActivity(new Intent(Trips.this,MainActivity.class));
                                               finish();
 
                                           }
@@ -200,24 +213,24 @@ public class Trips extends AppCompatActivity {
                                 user.setName(editName.getText().toString());
                                 user.setPhone(editPhoneNbr.getText().toString());
 
-//                                users.child(FirebaseAuth.getInstance().getUid())
-//                                        .setValue(user)
-//                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void aVoid) {
-//
-//                                                Snackbar.make(rootLayout, "register successful", Snackbar.LENGTH_SHORT)
-//                                                        .show();
-//
-//                                            }
-//                                        })
-//                                        .addOnFailureListener(new OnFailureListener() {
-//                                            @Override
-//                                            public void onFailure(@NonNull Exception e) {
-//                                                Snackbar.make(rootLayout, "registration failed", Snackbar.LENGTH_SHORT)
-//                                                        .show();
-//                                            }
-//                                        });
+                                users.child(FirebaseAuth.getInstance().getUid())
+                                        .setValue(user)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                                Snackbar.make(rootLayout, "register successful", Snackbar.LENGTH_SHORT)
+                                                        .show();
+
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Snackbar.make(rootLayout, "registration failed", Snackbar.LENGTH_SHORT)
+                                                        .show();
+                                            }
+                                        });
 
                             }
                         });

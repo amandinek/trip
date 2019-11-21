@@ -1,10 +1,17 @@
 package com.example.trip;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -13,8 +20,17 @@ import butterknife.ButterKnife;
 
 public class PaymentActivity extends AppCompatActivity implements RatingBar.OnRatingBarChangeListener, View.OnClickListener {
 
-    @BindView(R.id.paymen)Button payment;
-    @BindView(R.id.ratting) RatingBar rate;
+    @BindView(R.id.paymen)
+    Button payment;
+    @BindView(R.id.ratting)
+    RatingBar rate;
+    @BindView(R.id.money)
+    Button cash;
+    @BindView(R.id.mobil)
+    Button mobile;
+    @BindView(R.id.amount)
+    EditText price;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +41,10 @@ public class PaymentActivity extends AppCompatActivity implements RatingBar.OnRa
 
         payment.setOnClickListener(this);
         rate.setOnRatingBarChangeListener(this);
+        cash.setOnClickListener(this);
+        mobile.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -35,7 +55,26 @@ public class PaymentActivity extends AppCompatActivity implements RatingBar.OnRa
 
     @Override
     public void onClick(View v) {
-       Toast.makeText(PaymentActivity.this, "Check your sms!!!", Toast.LENGTH_LONG).show();
+        if (v == payment) {
+            Toast.makeText(PaymentActivity.this, "Thank you to ride with us!!!", Toast.LENGTH_LONG).show();
+            Intent rate = new Intent(PaymentActivity.this, RatingActivity.class);
+            startActivity(rate);
+
+        }
+        if (v == mobile) {
+            Uri number = Uri.parse("tel:*182*6#");
+            Intent callIntent = new Intent(Intent.ACTION_CALL, number);
+
+            startActivity(callIntent);
+
+//
+//           if (ActivityCompat.checkSelfPermission(PaymentActivity.this,
+//                   Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+//
+//           }
+
+        }
 
     }
 }
+

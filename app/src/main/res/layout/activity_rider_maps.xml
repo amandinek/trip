@@ -18,17 +18,17 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
 
-            <EditText
-                android:id="@+id/depart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
+<!--            <EditText-->
+<!--                android:id="@+id/depart"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentStart="true"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_alignParentBottom="true"-->
 
-                android:hint="Departure Location"
-                android:textColor="@color/colorPrimaryText"
-                android:textColorHint="@color/colorPrimaryText" />
+<!--                android:hint="Departure Location"-->
+<!--                android:textColor="@color/colorPrimaryText"-->
+<!--                android:textColorHint="@color/colorPrimaryText" />-->
 
 
             <EditText
@@ -40,17 +40,17 @@
                 android:textColorHint="@color/colorPrimaryText"
                 android:layout_marginStart="58dp"
                 android:layout_marginLeft="58dp"/>
-
+            <Button
+                android:id="@+id/add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/locations"
+                android:text="Go"
+                android:textColor="@color/colorPrimary" />
 
 
         </LinearLayout>
-        <Button
-            android:id="@+id/add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/locations"
-            android:text="view on map"
-            android:textColor="@color/colorPrimary" />
+
 
         <fragment
             android:id="@+id/map"
@@ -114,8 +114,9 @@
             android:layout_height="wrap_content"
             android:text="Request"
             android:id="@+id/submit"
-            android:layout_marginTop="550dp"
+            android:layout_marginTop="580dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginLeft="150dp"
             android:gravity="center"/>
 
 

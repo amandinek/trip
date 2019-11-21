@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">TRIP</string>
     <string name="Slogan">Your Journey,Our Concern!!!</string>
-    <string name="access_token">pk.eyJ1IjoiYmVuZXRyaXAiLCJhIjoiY2szMDllZ2Q5MGdmeDNicWowOWh4eHU4NyJ9.byuvzaFXZkjxT35KYjIbdQ</string>
     <string name="title_activity_driver_maps">Map</string>
     <string name="title_activity_rider_maps">Map</string>
     <string name="depart">Departure location</string>

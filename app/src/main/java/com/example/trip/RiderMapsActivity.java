@@ -136,11 +136,21 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         riderMap = googleMap;
 
+        riderMap.setMyLocationEnabled(true);
+        GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange (Location mLastLocation) {
+                LatLng loc = new LatLng (mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                riderMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            }
+        };
+        riderMap.setOnMyLocationChangeListener(myLocationChangeListener);
+
         // Add a marker in Sydney and move the camera
-        float zoomLevel=15.0f;
-        LatLng kigali = new LatLng(-1.9501, 30.0588);
-        riderMap.addMarker(new MarkerOptions().position(kigali).title("Marker in kigali"));
-        riderMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kigali,zoomLevel));
+//        float zoomLevel=15.0f;
+//        LatLng lastLocation = new LatLng(-1.9501, 30.0588);
+//        riderMap.addMarker(new MarkerOptions().position(kigali).title("Marker in kigali"));
+//        riderMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kigali,zoomLevel));
     }
 
     @Override
@@ -292,7 +302,8 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         //Single Permission is granted
-                        Toast.makeText(RiderMapsActivity.this, "Single permission is granted!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RiderMapsActivity.this, "Single permission is granted!",
+                                Toast.LENGTH_SHORT).show();
                         isPermission = true;
                     }
 
@@ -305,7 +316,8 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
                     }
 
                     @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
+                                                                   PermissionToken token) {
                         token.continuePermissionRequest();
                     }
                 }).check();

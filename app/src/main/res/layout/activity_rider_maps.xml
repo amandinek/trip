@@ -18,17 +18,17 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
 
-<!--            <EditText-->
-<!--                android:id="@+id/depart"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_alignParentStart="true"-->
-<!--                android:layout_alignParentLeft="true"-->
-<!--                android:layout_alignParentBottom="true"-->
+            <EditText
+                android:id="@+id/depart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
 
-<!--                android:hint="Departure Location"-->
-<!--                android:textColor="@color/colorPrimaryText"-->
-<!--                android:textColorHint="@color/colorPrimaryText" />-->
+                android:hint="Departure Location"
+                android:textColor="@color/colorPrimaryText"
+                android:textColorHint="@color/colorPrimaryText" />
 
 
             <EditText

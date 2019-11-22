@@ -80,6 +80,17 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
 //        setUpLocation();
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        googleMap.setMyLocationEnabled(true);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setTrafficEnabled(false);
+        mMap.setIndoorEnabled(false);
+        mMap.setBuildingsEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+    }
+
     private void fetchLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
@@ -164,25 +175,7 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
 
 
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setTrafficEnabled(false);
-        mMap.setIndoorEnabled(false);
-        mMap.setBuildingsEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-
-
-//        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
-//        googleMap.addMarker(markerOptions);
-
-
-    }
 
 
 

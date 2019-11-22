@@ -26,12 +26,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ButterKnife.bind(this);
 
-        Animation slideRight= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.sliderigth);
-        driver.startAnimation(slideRight);
-
-
-        Animation slideLeft= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slideleft);
-        rider.startAnimation(slideLeft);
+//        Animation slideRight= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.sliderigth);
+//        driver.startAnimation(slideRight);
+//
+//
+//        Animation slideLeft= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slideleft);
+//        rider.startAnimation(slideLeft);
 
         driver.setOnClickListener(this);
         rider.setOnClickListener(this);
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if(v==driver){
-            Intent look =new Intent(MainActivity.this,DriverHomeActivity.class);
+            Intent look =new Intent(MainActivity.this,Trips.class);
             startActivity(look);
         }
 

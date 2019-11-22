@@ -77,7 +77,7 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
         driver=FirebaseDatabase.getInstance().getReference("drivers");
         geoFire =new GeoFire(driver);
 
-        setUpLocation();
+//        setUpLocation();
     }
 
     private void fetchLocation() {
@@ -85,6 +85,7 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
                 this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_CODE);
+            mMap.setMyLocationEnabled(true);
             return;
         }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
@@ -107,13 +108,11 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
         switch (requestCode) {
             case MY_PERMISSION_REQUEST_CODE: {
                 // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    if (checkPlayServices()) {
-//                        buildGoogleApiClient();
-//                        createLocationRequest();
-//                        displayLocation();
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    fetchLocation();
+                    if (checkPlayServices()) {
+                        buildGoogleApiClient();
+                        createLocationRequest();
+                        displayLocation();
 
 
                 } else {
@@ -124,13 +123,13 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
-    private void setUpLocation(){
-    if (checkPlayServices()) {
-        buildGoogleApiClient();
-        createLocationRequest();
-        displayLocation();
+//    private void setUpLocation(){
+//    if (checkPlayServices()) {
+//        buildGoogleApiClient();
+//        createLocationRequest();
+//        displayLocation();
     }
-}
+
 
     private void createLocationRequest() {
         mlocationRequest = LocationRequest.create();
@@ -174,6 +173,8 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
         mMap.setIndoorEnabled(false);
         mMap.setBuildingsEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+
 //        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 //        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
 //        googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -196,14 +197,14 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
     private void displayLocation() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            String[] permissions = {android.Manifest.permission.ACCESS_FINE_LOCATION};
+           mMap.setMyLocationEnabled(true);
             return;
         }
 
         mLastlocation= LocationServices.FusedLocationApi.getLastLocation(mgoogleApiClient);
         if(mLastlocation!=null){
             final double latitude = mLastlocation.getLatitude();
-            final double longitude = mLastlocation.getLongitude();
+            final double longitude =  mLastlocation.getLongitude();
             geoFire.setLocation(FirebaseAuth.getInstance().getCurrentUser().getUid(), new GeoLocation(latitude, longitude), new GeoFire.CompletionListener() {
                 @Override
                 public void onComplete(String key, DatabaseError error) {
@@ -217,6 +218,7 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
                                       .title("you"));
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),15.0f));
+
                     }
                 }
             });
@@ -229,7 +231,7 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            String[] permissions = {android.Manifest.permission.ACCESS_FINE_LOCATION};
+          mMap.setMyLocationEnabled(true);
             return;
         } else {
             mapFragment.getMapAsync(this);

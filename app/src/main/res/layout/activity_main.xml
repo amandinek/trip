@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -15,6 +16,7 @@
         android:layout_marginTop="85dp"
         android:text="@string/app_name"
         android:textColor="@color/colorAccent" />
+
 
     <TextView
         android:layout_width="wrap_content"

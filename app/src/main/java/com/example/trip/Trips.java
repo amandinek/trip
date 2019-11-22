@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -45,9 +46,9 @@ public class Trips extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-//        CalligraphyConfig.get( new CalligraphyConfig.Builder()
-//                                              .setDefaultFontPath("fonts/")  );
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_trips);
 
         auth=FirebaseAuth.getInstance();
@@ -129,7 +130,7 @@ public class Trips extends AppCompatActivity {
                                       .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                           @Override
                                           public void onSuccess(AuthResult authResult) {
-                                              startActivity(new Intent(Trips.this,MainActivity.class));
+                                              startActivity(new Intent(Trips.this,Welcome.class));
                                               finish();
 
                                           }

@@ -3,40 +3,62 @@ package com.example.trip;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.location.Location;
-import android.location.LocationProvider;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
-import com.mapbox.android.core.location.LocationEngine;
-import com.mapbox.android.core.location.LocationEngineProvider;
-import com.mapbox.android.core.permissions.PermissionsListener;
-import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-import java.util.List;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-public class MainActivity extends AppCompatActivity  {
-
-
+    @BindView(R.id.driving) TextView driver;
+    @BindView(R.id.riding)TextView rider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-               setContentView(R.layout.activity_main);
+
+        setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
+
+        Animation slideRight= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.sliderigth);
+        driver.startAnimation(slideRight);
+
+
+        Animation slideLeft= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slideleft);
+        rider.startAnimation(slideLeft);
+
+        driver.setOnClickListener(this);
+        rider.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v==rider){
+            Intent look =new Intent(MainActivity.this, BookRiderActivity.class);
+            startActivity(look);
+        }
+
+        if(v==driver){
+            Intent look =new Intent(MainActivity.this,DriverHomeActivity.class);
+            startActivity(look);
+        }
+
+    }
+
+              
 
 
 
 
 
 
-                    }
+                   
 
 
 }

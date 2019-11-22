@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    tools:context=".RiderMapsActivity">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/card">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locations"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+<!--            <EditText-->
+<!--                android:id="@+id/depart"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentStart="true"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_alignParentBottom="true"-->
+
+<!--                android:hint="Departure Location"-->
+<!--                android:textColor="@color/colorPrimaryText"-->
+<!--                android:textColorHint="@color/colorPrimaryText" />-->
+
+
+            <EditText
+                android:id="@+id/arrival"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Destination Location"
+                android:textColor="@color/colorPrimaryText"
+                android:textColorHint="@color/colorPrimaryText"
+                android:layout_marginStart="58dp"
+                android:layout_marginLeft="58dp"/>
+            <Button
+                android:id="@+id/add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/locations"
+                android:text="Go"
+                android:textColor="@color/colorPrimary" />
+
+
+        </LinearLayout>
+
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/locations"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="200dp"
+            />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:id="@+id/detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+        android:layout_marginTop="450dp">
+
+        <RadioGroup
+                android:id="@+id/bikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                 android:padding="20dp">
+
+                <RadioButton
+                    android:id="@+id/tvs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TVS=1000frws" />
+
+            <RadioButton
+                android:id="@+id/hund"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hund=1200frws" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="price"
+                android:layout_alignBaseline="@+id/bikes"
+                android:layout_toRightOf="@+id/bikes"
+                android:layout_marginLeft="20dp"
+                android:padding="20dp"/>
+        </RelativeLayout>
+
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Request"
+            android:id="@+id/submit"
+            android:layout_marginTop="580dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="150dp"
+            android:gravity="center"/>
+
+
+
+
+</FrameLayout>

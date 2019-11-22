@@ -28,7 +28,7 @@ public class BookRiderActivity extends AppCompatActivity implements View.OnClick
 
     @BindView(R.id.names)EditText names;
     @BindView(R.id.fone)EditText contacts;
-    @BindView(R.id.in_date)EditText date;
+
     @BindView(R.id.in_time)EditText time;
     @BindView(R.id.booking)Button booking;
 
@@ -67,7 +67,7 @@ public class BookRiderActivity extends AppCompatActivity implements View.OnClick
 
         ButterKnife.bind(this);
 
-        date.setOnClickListener(this);
+      ;
         time.setOnClickListener(this);
         booking.setOnClickListener(this);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -85,7 +85,6 @@ public class BookRiderActivity extends AppCompatActivity implements View.OnClick
         if (v==booking){
             String fullNames=names.getText().toString();
             String phone=contacts.getText().toString();
-            String datedepart=date.getText().toString();
             String timedepart=time.getText().toString();
 
 
@@ -93,27 +92,27 @@ public class BookRiderActivity extends AppCompatActivity implements View.OnClick
             startActivity(book);
 
         }
-        if(v==date){
-            // Get Current Date
-            final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+//        if(v==date){
+//            // Get Current Date
+//            final Calendar c = Calendar.getInstance();
+//            mYear = c.get(Calendar.YEAR);
+//            mMonth = c.get(Calendar.MONTH);
+//            mDay = c.get(Calendar.DAY_OF_MONTH);
 
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
-
-                            date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
-                        }
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        }
+//            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+//                    new DatePickerDialog.OnDateSetListener() {
+//
+//                        @Override
+//                        public void onDateSet(DatePicker view, int year,
+//                                              int monthOfYear, int dayOfMonth) {
+//
+//                            date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+//
+//                        }
+//                    }, mYear, mMonth, mDay);
+//            datePickerDialog.show();
+//        }
         if(v==time){
             // Get Current Time
             final Calendar c = Calendar.getInstance();

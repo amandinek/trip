@@ -19,8 +19,7 @@
         tools:layout_editor_absoluteX="152dp"
         tools:layout_editor_absoluteY="99dp" />
 
-    <EditText
-        android:id="@+id/in_date"
+    ditText        android:id="@+id/in_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/fone"
@@ -36,13 +35,12 @@
         android:id="@+id/in_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/in_date"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="23dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="260dp"
         android:hint="time of departure"
         android:textColor="@color/colorPrimaryText"
-        android:textColorHint="@color/colorChocolate"
+        android:textColorHint="@color/colorPrimaryText"
         android:textSize="16sp" />
 
     <EditText
@@ -57,7 +55,7 @@
         android:layout_marginTop="113dp"
         android:hint="Your Names"
         android:textColor="@color/colorPrimaryText"
-        android:textColorHint="@color/colorChocolate"
+        android:textColorHint="@color/colorPrimaryText"
         tools:layout_editor_absoluteX="82dp"
         tools:layout_editor_absoluteY="205dp" />
 
@@ -73,7 +71,7 @@
         android:layout_marginTop="184dp"
         android:hint="your phone numbers"
         android:textColor="@color/colorPrimaryText"
-        android:textColorHint="@color/colorChocolate"
+        android:textColorHint="@color/colorPrimaryText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.341"
         app:layout_constraintStart_toStartOf="parent"

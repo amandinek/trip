@@ -19,17 +19,17 @@
         tools:layout_editor_absoluteX="152dp"
         tools:layout_editor_absoluteY="99dp" />
 
-    ditText        android:id="@+id/in_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fone"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
-        android:hint="date of departure"
-        android:textColor="@color/colorPrimaryText"
-        android:textColorHint="@color/colorChocolate"
-        android:textSize="16sp" />
+<!--    ditText        android:id="@+id/in_date"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/fone"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:hint="date of departure"-->
+<!--        android:textColor="@color/colorPrimaryText"-->
+<!--        android:textColorHint="@color/colorChocolate"-->
+<!--        android:textSize="16sp" />-->
 
     <EditText
         android:id="@+id/in_time"
@@ -85,9 +85,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="143dp"
-        android:layout_marginLeft="143dp"
-        android:layout_marginBottom="166dp"
+        android:layout_marginStart="139dp"
+        android:layout_marginLeft="139dp"
+        android:layout_marginBottom="104dp"
         android:text="NEXT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.513"

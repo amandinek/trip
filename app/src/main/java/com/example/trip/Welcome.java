@@ -9,8 +9,14 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.trip.Common.Common;
+import com.example.trip.Remote.IGoogleAPI;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,14 +33,29 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Handler;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Welcome extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,
@@ -61,6 +82,22 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
     SupportMapFragment mapFragment;
     FusedLocationProviderClient fusedLocationProviderClient;
 //    private  SwitchMaterial switchMaterial;
+    ////////Bike anim////////
+
+    private List<LatLng> polyLineList;
+    private Marker pickUpLocationMarker;
+    private float v;
+    private double lat,lng;
+    private Handler handler;
+    private LatLng startPosition,endPosition,currentPosition;
+    private int index,next;
+    private Button btnGo;
+    private EditText mplace;
+    private String destination;
+    private PolylineOptions polygonOptions,blackPolyLineOptions;
+    private Polyline blackPolyLIne,greyPolyline;
+    private IGoogleAPI mService;
+
 
 
 
@@ -74,10 +111,102 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
          mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        polyLineList = new ArrayList<>();
+        btnGo = (Button) findViewById(R.id.btnGo);
+        mplace =(EditText) findViewById(R.id.editPlace);
+        btnGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                destination = mplace.getText().toString();
+                destination = destination.replace("","+");
+                Log.d("karambizi",destination);
+
+                getDirections();
+            }
+        });
+
         driver=FirebaseDatabase.getInstance().getReference("drivers");
         geoFire =new GeoFire(driver);
+        mService = Common.getGoogleAPI();
 
-//        setUpLocation();
+
+    }
+
+    private void getDirections() {
+        currentPosition = new LatLng(mLastlocation.getLatitude(),mLastlocation.getLongitude());
+
+        String requestAPI = null;
+        try {
+            requestAPI ="https://maps.googleapi.com/maps/api/directions/json?"+"mode=driving&"+
+                    "transit_routing_preference=less_driving&"+"origin"+ currentPosition.latitude+","+currentPosition.longitude +
+                    "&"+"destination="+destination+"&"+"key="+getResources().getString(R.string.google_map_api);
+            Log.d("karambizi",requestAPI);
+            mService.getPath(requestAPI)
+                    .enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            try {
+                                JSONObject jsonObject= new JSONObject(response.body().toString());
+                                JSONArray jsonArray = jsonObject.getJSONArray("routes");
+                                for (int i=0;i<jsonArray.length();i++){
+                                    JSONObject routes = jsonArray.getJSONObject(i);
+                                    JSONObject poly = routes.getJSONObject("overview_polyline");
+                                    String polyline = poly.getString("points");
+                                    polyLineList = decodePoly(polyline);
+                                }
+                                LatLngBounds.Builder builder= new LatLngBounds.Builder();
+                                for(LatLng latLng:polyLineList)
+                                    builder.include(latLng);
+                                LatLngBounds bounds= builder.build();
+
+                            } catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private List<LatLng> decodePoly(String polyline) {
+        List<LatLng> poly = new ArrayList<LatLng>();
+        int index = 0, len = polyline.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = polyline.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = polyline.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                    (((double) lng / 1E5)));
+            poly.add(p);
+        }
+
+        return poly;
     }
 
     @Override

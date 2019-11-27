@@ -1,17 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Welcome" >
+    <RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
 
-    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+    <LinearLayout
+        android:id="@+id/layoutPanel"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/editPlace"
+            android:layout_weight="5"
+            android:hint="enter pickup location"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnGo"
+            android:layout_width="74dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="GO" />
+
+    </LinearLayout>
+    <fragment
+        android:layout_below="@+id/layoutPanel"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Welcome" />
 
         <androidx.cardview.widget.CardView
             app:cardElevation="10dp"
@@ -24,6 +47,8 @@
                 android:layout_margin="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+
 
                 <Button
                     android:layout_width="0dp"
@@ -39,4 +64,3 @@
 
     </RelativeLayout>
 
-</fragment>

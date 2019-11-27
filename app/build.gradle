@@ -99,6 +99,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:$googlePlayVersion"
     implementation 'com.karumi:dexter:5.0.0'
     //rating dependecies
+    ////retrofit library
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
 
 
 

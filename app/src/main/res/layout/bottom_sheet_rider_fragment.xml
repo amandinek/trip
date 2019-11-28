@@ -6,14 +6,25 @@
     android:id="@+id/bottomsheetrider"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.bottomsheetrider.BottomSheetRiderFragment">
+    android:orientation="vertical">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp"
-    >
+    android:layout_below="@+id/trip">
+    <ImageView
+        android:id="@+id/imageAvatar"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_person_black_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        />
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,9 +34,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pickup location"
-            android:drawableLeft="@drawable/ic_location_on_black_24dp"
-            android:id="@+id/pickup"
+            android:text="Driver's name"
+            android:drawableLeft="@drawable/ic_person_name_24dp"
+            android:id="@+id/driverName"
             android:textColor="@color/colorPrimaryText"/>
     </LinearLayout>
     <LinearLayout
@@ -34,14 +45,8 @@
         android:layout_weight="10"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Destination location"
-            android:drawableLeft="@drawable/ic_pin_drop_black_24dp"
-            android:id="@+id/destination"
-            android:textColor="@color/colorPrimaryText"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,15 +54,55 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/driverPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10Km+20min=1200Frws"
-            android:drawableLeft="@drawable/ic_attach_money_black_24dp"
-            android:id="@+id/cash"
-            android:textColor="@color/colorPrimaryText"/>
+            android:drawableLeft="@drawable/ic_phone_driver_24dp"
+            android:text="phone number"
+            android:textColor="@color/colorPrimaryText" />
+
+    </LinearLayout>
+   </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/trip">
+
+
+
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_motorcycle_black_24dp"
+        android:text="Distance:"
+        android:textColor="@color/colorPrimaryText" />
+
+    <TextView
+        android:id="@+id/tariff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="96dp"
+        android:layout_marginRight="96dp"
+        android:layout_marginBottom="0dp"
+        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
+        android:text="Fare:"
+        android:textColor="@color/colorPrimaryText" />
     </LinearLayout>
 
-
-</LinearLayout>
+    <TextView
+        android:id="@+id/driverRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="0dp"
+        android:drawableLeft="@drawable/ic_star_black_24dp"
+        android:text="rating"
+        android:textColor="@color/colorPrimaryText" />
 
 </RelativeLayout>

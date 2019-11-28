@@ -1,4 +1,4 @@
-package com.example.trip;
+package com.example.trip.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import com.example.trip.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

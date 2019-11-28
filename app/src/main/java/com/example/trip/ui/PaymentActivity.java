@@ -1,4 +1,4 @@
-package com.example.trip;
+package com.example.trip.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -11,10 +11,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.trip.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,12 +58,14 @@ public class PaymentActivity extends AppCompatActivity implements RatingBar.OnRa
 
         }
         if (v == mobile) {
-            Uri number = Uri.parse("tel:*182*3*123"+"tel:#");
-            Intent callIntent = new Intent(Intent.ACTION_CALL, number);
+            final String number="tel:*182*3*123#";
+            Uri call = Uri.parse(number);
+            Intent callIntent = new Intent(Intent.ACTION_DIAL, call);
+
             startActivity(callIntent);
 
            if (ActivityCompat.checkSelfPermission(PaymentActivity.this,
-                   Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+                   Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED){
 
                startActivity(callIntent);
            }

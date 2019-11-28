@@ -1,8 +1,10 @@
-package com.example.trip;
+package com.example.trip.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.trip.R;
 
 public class DriverHomeActivity extends AppCompatActivity {
 

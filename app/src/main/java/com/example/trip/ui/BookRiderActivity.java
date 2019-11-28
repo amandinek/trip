@@ -1,18 +1,18 @@
-package com.example.trip;
+package com.example.trip.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.example.trip.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -83,36 +83,19 @@ public class BookRiderActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
 
         if (v==booking){
-            String fullNames=names.getText().toString();
-            String phone=contacts.getText().toString();
-            String timedepart=time.getText().toString();
 
+            if((names==null)||(contacts==null)||(time==null)){
+                Toast.makeText(this, "please fill the blank", Toast.LENGTH_SHORT).show();
+            }
 
-            Intent book =new Intent(BookRiderActivity.this,RiderMapsActivity.class);
-            startActivity(book);
+           else{
+                saveUser();
+                Intent book =new Intent(BookRiderActivity.this, RiderMapsActivity.class);
+                startActivity(book);
+            }
 
         }
-//        if(v==date){
-//            // Get Current Date
-//            final Calendar c = Calendar.getInstance();
-//            mYear = c.get(Calendar.YEAR);
-//            mMonth = c.get(Calendar.MONTH);
-//            mDay = c.get(Calendar.DAY_OF_MONTH);
 
-
-//            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-//                    new DatePickerDialog.OnDateSetListener() {
-//
-//                        @Override
-//                        public void onDateSet(DatePicker view, int year,
-//                                              int monthOfYear, int dayOfMonth) {
-//
-//                            date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-//
-//                        }
-//                    }, mYear, mMonth, mDay);
-//            datePickerDialog.show();
-//        }
         if(v==time){
             // Get Current Time
             final Calendar c = Calendar.getInstance();
@@ -132,5 +115,43 @@ public class BookRiderActivity extends AppCompatActivity implements View.OnClick
                     }, mHour, mMinute, false);
             timePickerDialog.show();
         }
+    }
+
+    private void saveUser() {
+        String fullNames=names.getText().toString();
+        String phone=contacts.getText().toString();
+        String timedepart=time.getText().toString();
+        String name=names.getText().toString();
+
+        boolean validName=isValidName(name);
+        boolean validPhone=isValidPhone(phone);
+        boolean validTime=isValidTime(timedepart);
+
+    }
+
+    private boolean isValidName(String name) {
+
+        if (name.equals("")){
+            names.setError("Please enter your name");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidPhone(String phone) {
+
+        if (phone.length() < 10){
+            contacts.setError("Please enter a valid phone number");
+            return false;
+        }
+        return true;
+    }
+    private boolean isValidTime(String timedepart) {
+
+        if (timedepart.equals("")){
+            time.setError("Please enter your pickup time ");
+            return false;
+        }
+        return true;
     }
 }

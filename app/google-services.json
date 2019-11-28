@@ -8,6 +8,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:617082858001:android:d186dcea317035014fdfb0",
+        "android_client_info": {
+          "package_name": "com.example.ridermap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617082858001-qlrt3vpt27ta6fh36rghn3a3r6q593rc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ridermap",
+            "certificate_hash": "9f9db6f3ce82c4e8307ac0790db93e34739f5c0d"
+          }
+        },
+        {
+          "client_id": "617082858001-apqi615f9jbb4t4c9fql3r7ar2gqntbh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCmj_tcAtbfLdIBm3qL0nPkm72XFEMB88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617082858001-apqi615f9jbb4t4c9fql3r7ar2gqntbh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:617082858001:android:71be7bc38964c4884fdfb0",
         "android_client_info": {
           "package_name": "com.example.trip"

@@ -1,9 +1,8 @@
-package com.example.trip;
+package com.example.trip.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
@@ -19,18 +18,22 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.trip.fragment.RiderBottomDialogFragment;
+import com.example.trip.services.PlaceSelectionListener;
+import com.example.trip.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,7 +42,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -50,13 +52,17 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCallback,PlaceSelectionListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+import static com.google.android.gms.common.GooglePlayServicesUtilLight.isGooglePlayServicesAvailable;
+
+public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCallback, PlaceSelectionListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, RiderBottomDialogFragment.ItemClickListener {
+
+    private static final String TAG = "RiderMapsActivity";
 
     private GoogleMap riderMap;
     Location mLastLocation,nextLocation;
     LocationRequest mLocationRequest;
-    private static final String TAG = "MainActivity";
+    private static final String LOG_TAG = RiderMapsActivity.class.getSimpleName();
     private FusedLocationProviderClient mFusedLocationClient;
 
 
@@ -73,19 +79,23 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
     private LatLng destinationLatLng;
 
     private LinearLayout inputs;
+    private  PlaceAutocompleteFragment placeDestination;
+    AutocompleteFilter typeFilter;
 
-    @BindView(R.id.arrival)EditText drop;
+//    @BindView(R.id.arrival)TextView drop;
+
+
     @BindView(R.id.submit) Button request;
-    @BindView(R.id.add)Button view;
+    @BindView(R.id.view)Button details;
 
     private boolean isPermission;
     private GoogleApiClient mGoogleApiClient;
     private LocationManager locationManager;
+    Marker mCurrLocationMarker;
 
     private com.google.android.gms.location.LocationListener listener;
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 20000; /* 20 sec */
-
 
 
 
@@ -104,7 +114,40 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
             destinationLatLng = new LatLng(0.0, 0.0);
             ButterKnife.bind(this);
 
-            drop.setOnClickListener(this);
+
+
+            placeDestination=(PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+
+            typeFilter=new AutocompleteFilter.Builder()
+                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                    .setTypeFilter(3)
+                    .build();
+
+            placeDestination.setOnPlaceSelectedListener(new com.google.android.gms.location.places.ui.PlaceSelectionListener() {
+                @Override
+                public void onPlaceSelected(Place place) {
+//                    if(location_switch.isChecked){
+//                        dropLocation=place.getAddress().toString();
+//                        dropLocation=dropLocation.replace("","+");
+//
+//                        getDirection();
+//                    }
+//                   else{
+//                       Toast.makeText(RiderMapsActivity.this,"please switch on your internet connexion",Toast.LENGTH_LONG);
+//                    }
+                }
+
+                @Override
+                public void onError(Status status) {
+                    Toast.makeText(RiderMapsActivity.this,""+status.toString(),Toast.LENGTH_LONG);
+                }
+            });
+
+
+
+
+            details.setOnClickListener(this);
             request.setOnClickListener(this);
 
 
@@ -118,7 +161,18 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
 
             checkLocation(); //check whether location service is enable or not in your  phone
 
+
+
+
+        /*AutocompleteFilter filter = new AutocompleteFilter.Builder()
+                .setCountry("IN")
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
+        autocompleteFragment.setFilter(filter);*/
+
         }
+
+
 
 
 
@@ -132,6 +186,7 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
          * installed Google Play services and returned to the app.
          */
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         riderMap = googleMap;
@@ -142,6 +197,17 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
             public void onMyLocationChange (Location mLastLocation) {
                 LatLng loc = new LatLng (mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 riderMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+
+                //Place current location marker
+                LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title("Current Position");
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                mCurrLocationMarker = riderMap.addMarker(markerOptions);
+
+
+
             }
         };
         riderMap.setOnMyLocationChangeListener(myLocationChangeListener);
@@ -155,18 +221,16 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
 
     @Override
     public void onClick(View v) {
-        if(v==view){
-            pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            pickupMarker = riderMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.common_full_open_on_phone)));
+        if(v==details){
 
-            dropLocation=new LatLng(nextLocation.getLatitude(),nextLocation.getLongitude());
-            dropMarker= riderMap.addMarker(new MarkerOptions().position(dropLocation).title("Next Location")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.common_full_open_on_phone)));
+                RiderBottomDialogFragment addPhotoBottomDialogFragment =
+                        RiderBottomDialogFragment.newInstance();
+                addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                        RiderBottomDialogFragment.TAG);
 
         }
         if(v==request){
-            Intent pay =new Intent(RiderMapsActivity.this,PaymentActivity.class);
+            Intent pay =new Intent(RiderMapsActivity.this, PaymentActivity.class);
             startActivity(pay);
         }
 
@@ -235,6 +299,7 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -263,6 +328,16 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onPlaceSelected(Place place) {
+
+    }
+
+    @Override
+    public void onError(Status status) {
+
     }
 
     private void showAlert() {
@@ -323,6 +398,13 @@ public class RiderMapsActivity extends FragmentActivity implements OnMapReadyCal
                 }).check();
 
         return isPermission;
+
+    }
+
+
+
+    @Override
+    public void onItemClick(String item) {
 
     }
 }

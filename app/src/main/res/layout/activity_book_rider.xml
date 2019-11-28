@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BookRiderActivity">
+    tools:context=".ui.BookRiderActivity">
 
 
     <TextView
@@ -17,19 +17,9 @@
         android:text="Book Rider"
         android:textColor="@color/colorPrimaryText"
         tools:layout_editor_absoluteX="152dp"
-        tools:layout_editor_absoluteY="99dp" />
+        tools:layout_editor_absoluteY="99dp"
+        android:inputType="text"/>
 
-    ditText        android:id="@+id/in_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fone"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
-        android:hint="date of departure"
-        android:textColor="@color/colorPrimaryText"
-        android:textColorHint="@color/colorChocolate"
-        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/in_time"
@@ -57,7 +47,8 @@
         android:textColor="@color/colorPrimaryText"
         android:textColorHint="@color/colorPrimaryText"
         tools:layout_editor_absoluteX="82dp"
-        tools:layout_editor_absoluteY="205dp" />
+        tools:layout_editor_absoluteY="205dp"
+        android:inputType="text"/>
 
     <EditText
         android:id="@+id/fone"
@@ -75,7 +66,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.341"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="269dp" />
+        tools:layout_editor_absoluteY="269dp"
+        android:inputType="phone"/>
 
     <Button
         android:id="@+id/booking"

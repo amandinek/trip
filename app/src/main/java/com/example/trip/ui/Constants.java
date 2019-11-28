@@ -1,4 +1,4 @@
-package com.example.trip;
+package com.example.trip.ui;
 
 public class Constants {
 

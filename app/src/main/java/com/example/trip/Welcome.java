@@ -38,6 +38,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -130,14 +131,34 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
                     bikeMarker.setPosition(newPos);
                     bikeMarker.setAnchor(0.5f,0.5f);
                     bikeMarker.setRotation(getBearing(startPosition,newPos));
-
+                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder()
+                            .target(newPos)
+                            .zoom(15.5f)
+                            .build()
+                    ));
                 }
             });
+            valueAnimator.start();
+            handler.postDelayed(this,5000);
         }
     };
 
+    private float getBearing(LatLng startPosition, LatLng endPosition) {
+        double lat = Math.abs(startPosition.latitude-endPosition.latitude);
+        double lng = Math.abs(startPosition.longitude-endPosition.longitude);
+        if(startPosition.latitude < endPosition.latitude && startPosition.longitude < endPosition.longitude)
+            return (float)(Math.toDegrees(Math.atan(lng/lat)));
+        else if(startPosition.latitude >= endPosition.latitude && startPosition.longitude < endPosition.longitude)
+            return (float)((90-Math.toDegrees(Math.atan(lng/lat)))+90);
+        else if(startPosition.latitude >= endPosition.latitude && startPosition.longitude >= endPosition.longitude)
+            return (float)(Math.toDegrees(Math.atan(lng/lat))+180);
+        else if(startPosition.latitude < endPosition.latitude && startPosition.longitude >= endPosition.longitude)
+            return (float)((90-Math.toDegrees(Math.atan(lng/lat)))+270);
 
+        return -1;
 
+    }
 
 
     @Override
@@ -175,8 +196,8 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
 
         String requestAPI = null;
         try {
-            requestAPI ="https://maps.googleapi.com/maps/api/directions/json?"+"mode=driving&"+
-                    "transit_routing_preference=less_driving&"+"origin"+ currentPosition.latitude+","+currentPosition.longitude +
+            requestAPI ="https://maps.googleapis.com/maps/api/directions/json?"+"mode=driving&"+
+                    "transit_routing_preference=less_driving&"+"origin="+ currentPosition.latitude+","+currentPosition.longitude +
                     "&"+"destination="+destination+"&"+"key="+getResources().getString(R.string.google_map_api);
             Log.d("karambizi",requestAPI);
             mService.getPath(requestAPI)
@@ -187,7 +208,7 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
                                 JSONObject jsonObject= new JSONObject(response.body().toString());
                                 JSONArray jsonArray = jsonObject.getJSONArray("routes");
                                 for (int i=0;i<jsonArray.length();i++){
-                                    JSONObject routes = jsonArray.getJSONObject(i);
+                                    JSONObject routes = jsonArray.getJSONObject(0);
                                     JSONObject poly = routes.getJSONObject("overview_polyline");
                                     String polyline = poly.getString("points");
                                     polyLineList = decodePoly(polyline);
@@ -242,7 +263,7 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
                                 handler = new Handler();
                                 index= 1;
                                 next = 1;
-                                handler.post(drawPathRunnable,3000);
+                                handler.postDelayed(drawPathRunnable,3000);
 
 
 
@@ -423,6 +444,8 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
 
                     if(mCurrent!=null){
                         mCurrent.remove();
+                        mMap.clear();
+                        handler.removeCallbacks(drawPathRunnable);
                         LatLng latLng = new LatLng(mLastlocation.getLatitude(), mLastlocation.getLongitude());
                         mCurrent =mMap.addMarker(new MarkerOptions()
                                      .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike))

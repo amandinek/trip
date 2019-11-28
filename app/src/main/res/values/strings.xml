@@ -6,7 +6,7 @@
     <string name="depart">Departure location</string>
     <string name="arrival">Destination location</string>
     <string name="user_location_permission_not_granted">Access not granted</string>
-    <string name="google_map_api">AIzaSyAR_SZAJaJsOXDhrRWhdbrfOnHQUUg9azE</string>
+    <string name="google_map_api">AIzaSyCwGXDQnvRciXH_PY7Ej68Vw0viIdppdqQ</string>
     <string name="user_location_permission_explanation">certify</string>
 
 </resources>

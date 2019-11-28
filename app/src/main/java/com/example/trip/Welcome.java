@@ -6,11 +6,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.util.Size;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,12 +31,14 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -39,6 +46,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.SquareCap;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,7 +59,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -85,18 +92,49 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
     ////////Bike anim////////
 
     private List<LatLng> polyLineList;
-    private Marker pickUpLocationMarker;
+    private Marker bikeMarker;
     private float v;
     private double lat,lng;
-    private Handler handler;
+    private android.os.Handler handler;
     private LatLng startPosition,endPosition,currentPosition;
     private int index,next;
     private Button btnGo;
     private EditText mplace;
     private String destination;
-    private PolylineOptions polygonOptions,blackPolyLineOptions;
-    private Polyline blackPolyLIne,greyPolyline;
+    private PolylineOptions polylineOptions,blackPolyLineOptions;
+    private Polyline blackPolyline,greyPolyline;
     private IGoogleAPI mService;
+
+    Runnable drawPathRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (index<polyLineList.size()-1){
+                index++;
+                next = index+1;
+            }
+            if (index<polyLineList.size()-1){
+                startPosition =polyLineList.get(index);
+                endPosition = polyLineList.get(next);
+            }
+
+            ValueAnimator valueAnimator =ValueAnimator.ofFloat(0,1);
+            valueAnimator.setDuration(3000);
+            valueAnimator.setInterpolator(new LinearInterpolator());
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    v=valueAnimator.getAnimatedFraction();
+                    lng =v*endPosition.longitude+(1-v)*startPosition.longitude;
+                    lng =v*endPosition.latitude+(1-v)*startPosition.latitude;
+                    LatLng newPos = new LatLng(lat,lng);
+                    bikeMarker.setPosition(newPos);
+                    bikeMarker.setAnchor(0.5f,0.5f);
+                    bikeMarker.setRotation(getBearing(startPosition,newPos));
+
+                }
+            });
+        }
+    };
 
 
 
@@ -158,6 +196,58 @@ public class Welcome extends FragmentActivity implements OnMapReadyCallback,
                                 for(LatLng latLng:polyLineList)
                                     builder.include(latLng);
                                 LatLngBounds bounds= builder.build();
+                                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,2);
+                                mMap.animateCamera(cameraUpdate);
+
+                                polylineOptions = new PolylineOptions();
+                                polylineOptions.color(Color.BLACK);
+                                polylineOptions.width(5);
+                                polylineOptions.startCap(new SquareCap());
+                                polylineOptions.endCap(new SquareCap());
+                                polylineOptions.jointType(JointType.ROUND);
+                                polylineOptions.addAll(polyLineList);
+                                greyPolyline = mMap.addPolyline(polylineOptions);
+
+                                blackPolyLineOptions = new PolylineOptions();
+                                blackPolyLineOptions.color(Color.GRAY);
+                                blackPolyLineOptions.width(5);
+                                blackPolyLineOptions.startCap(new SquareCap());
+                                blackPolyLineOptions.endCap(new SquareCap());
+                                blackPolyLineOptions.addAll(polyLineList);
+                                blackPolyline = mMap.addPolyline(blackPolyLineOptions);
+
+                                mMap.addMarker(new MarkerOptions()
+                                     .position(polyLineList.get(polyLineList.size()-1))
+                                      .title("pickup location"));
+                                /////animations////
+                                ValueAnimator polylineAnimator = ValueAnimator.ofInt(0,100);
+                                polylineAnimator.setDuration(2000);
+                                polylineAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator animation) {
+                                        List<LatLng> points = greyPolyline.getPoints();
+                                        int parcentValue =(int) animation.getAnimatedValue();
+                                        int size = points.size();
+                                        int newPoints =(int) (size*(parcentValue/100.0f));
+                                        List<LatLng> p =points.subList(0,newPoints);
+                                        blackPolyline.setPoints(p);
+
+                                    }
+                                });
+                                polylineAnimator.start();
+
+                                bikeMarker = mMap.addMarker(new MarkerOptions().position(currentPosition)
+                                 .flat(true)
+                                  .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike)));
+                                handler = new Handler();
+                                index= 1;
+                                next = 1;
+                                handler.post(drawPathRunnable,3000);
+
+
+
+
+
 
                             } catch (Exception e){
                                 e.printStackTrace();
